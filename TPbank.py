@@ -132,47 +132,51 @@ class AutoDownloadTPbank:
         if self.loadCompleted(transaction_div_xpath,200):
             time.sleep(10)
 
-            
-            all_transaction = self.driver.find_element(By.XPATH, transaction_div_xpath)
-            html_content = all_transaction.get_attribute("innerHTML")
+            try:
+                all_transaction = self.driver.find_element(By.XPATH, transaction_div_xpath)
+                html_content = all_transaction.get_attribute("innerHTML")
 
-            # Print the HTML content
-            print(html_content)
-            each = all_transaction.find_elements(By.CLASS_NAME, 'item-transaction-info')
-            print("len===",len(each))
-            
-            
-            
-            with open('extract_data.txt', mode='w', encoding='utf-8') as log_file:
-                log_file.write(card_balances + ' ' + '\n')
-            
-            for row in each:
-                self.driver.execute_script("arguments[0].scrollIntoView();", row)
-                ActionChains(self.driver).click(row).perform()
-                print("click row")
-                # row.click()
-                time.sleep(5)
-                balance_value = self.driver.find_element(By.CLASS_NAME, 'balance-value').text
-                print("balance", balance_value)
+                # Print the HTML content
+                print(html_content)
+                each = all_transaction.find_elements(By.CLASS_NAME, 'item-transaction-info')
+                print("len===",len(each))
+                
+                
+                
+                with open('extract_data.txt', mode='w', encoding='utf-8') as log_file:
+                    log_file.write(card_balances + ' ' + '\n')
+                
+                for row in each:
+                    self.driver.execute_script("arguments[0].scrollIntoView();", row)
+                    ActionChains(self.driver).click(row).perform()
+                    print("click row")
+                    # row.click()
+                    time.sleep(5)
+                    balance_value = self.driver.find_element(By.CLASS_NAME, 'balance-value').text
+                    print("balance", balance_value)
 
-                info_name = self.driver.find_element(By.CLASS_NAME, 'info-name').text
-                print("info_name", info_name)
-                
-                each_in = self.driver.find_elements(By.CLASS_NAME, 'info-line')
-                print("len===",len(each_in))
-                
-                line_right = ""
-                for row_in in each_in:
-                    line_right = line_right + row_in.find_element(By.CLASS_NAME, 'line-right').text + ' '
-                    print("line_right", line_right)
-                
-                close_btn = '/html/body/app-root/main-component/div/div[2]/div/div/div[1]/div/app-account-transaction/div/div/div[2]/app-acc-trans-search/div[1]/app-modal[1]/div/div/div/div/div[1]/img'
-                self.clickElement(close_btn)
+                    info_name = self.driver.find_element(By.CLASS_NAME, 'info-name').text
+                    print("info_name", info_name)
+                    
+                    each_in = self.driver.find_elements(By.CLASS_NAME, 'info-line')
+                    print("len===",len(each_in))
+                    
+                    line_right = ""
+                    for row_in in each_in:
+                        line_right = line_right + row_in.find_element(By.CLASS_NAME, 'line-right').text + ' '
+                        print("line_right", line_right)
+                    
+                    close_btn = '/html/body/app-root/main-component/div/div[2]/div/div/div[1]/div/app-account-transaction/div/div/div[2]/app-acc-trans-search/div[1]/app-modal[1]/div/div/div/div/div[1]/img'
+                    self.clickElement(close_btn)
 
-                with open('extract_data.txt', mode='a', encoding='utf-8') as log_file:
-                    log_file.write(balance_value + ' ' + info_name + ' ' + line_right + '\n')
-                time.sleep(5)
-                print('----------------------------------')
+                    with open('extract_data.txt', mode='a', encoding='utf-8') as log_file:
+                        log_file.write(balance_value + ' ' + info_name + ' ' + line_right + '\n')
+                    time.sleep(5)
+                    print('----------------------------------')
+            except :
+                with open('log.txt', mode='a', encoding='utf-8') as log_file:
+                    log_file.write("error" + '\n')
+            
         time.sleep(30)
         # self.driver.quit()
         self.runDownload()
