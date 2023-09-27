@@ -151,7 +151,7 @@ class AutoDownloadTPbank:
                     ActionChains(self.driver).click(row).perform()
                     print("click row")
                     # row.click()
-                    time.sleep(5)
+                    time.sleep(10)
                     balance_value = self.driver.find_element(By.CLASS_NAME, 'balance-value').text
                     print("balance", balance_value)
 
